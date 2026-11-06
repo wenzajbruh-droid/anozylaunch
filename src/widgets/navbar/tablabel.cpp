@@ -2,7 +2,7 @@
 #include <QPainter>
 #include <QColor>
 
-TabLabel::TabLabel(QWidget* parent = 0, QSettings* palette = 0) : QLabel(parent)
+TabLabel::TabLabel(QWidget* parent, QSettings* palette) : QLabel(parent)
 {
     this->palette = palette;
     this->isActive = false;

@@ -42,7 +42,8 @@ jobs:
           set -e
           mkdir build && cd build
           "$Qt5_Dir/bin/qmake" ../HorizonLauncher-android.pro -spec android-clang CONFIG+=release ANDROID_ABIS=arm64-v8a
-          make -j"$(nproc)"
+          # -k keeps compiling after an error so one run lists every compile error, not just the first
+          make -k -j"$(nproc)"
           make INSTALL_ROOT="$PWD/android-build" install
           "$Qt5_Dir/bin/androiddeployqt" \
             --input android-HorizonLauncher-deployment-settings.json \
