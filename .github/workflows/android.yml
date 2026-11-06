@@ -11,6 +11,8 @@ on:
 jobs:
   apk:
     runs-on: ubuntu-22.04
+    permissions:
+      contents: write # needed to create the GitHub Release on tag pushes
     steps:
       - uses: actions/checkout@v4
 
@@ -52,3 +54,12 @@ jobs:
         with:
           name: HorizonLauncher-debug-apk
           path: build/android-build/build/outputs/apk/debug/*.apk
+
+      # Pushing a tag like v0.1.0 publishes the APK as a pre-release.
+      - name: Publish release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          prerelease: true
+          generate_release_notes: true
+          files: build/android-build/build/outputs/apk/debug/*.apk
