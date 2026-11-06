@@ -1,0 +1,54 @@
+name: Android APK
+
+# Builds a debug APK with Qt 5.15.2 for Android so no local Qt/NDK setup is needed.
+# Download the result from the run's "Artifacts" section.
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  apk:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "11"
+
+      # Qt 5.15 is built against NDK r21e.
+      - uses: nttld/setup-ndk@v1
+        id: ndk
+        with:
+          ndk-version: r21e
+
+      - uses: jurplel/install-qt-action@v3
+        with:
+          version: 5.15.2
+          host: linux
+          target: android
+          arch: android
+
+      - name: Build APK
+        env:
+          ANDROID_NDK_ROOT: ${{ steps.ndk.outputs.ndk-path }}
+          ANDROID_NDK_HOME: ${{ steps.ndk.outputs.ndk-path }}
+        run: |
+          set -e
+          mkdir build && cd build
+          "$Qt5_Dir/bin/qmake" ../HorizonLauncher-android.pro -spec android-clang CONFIG+=release ANDROID_ABIS=arm64-v8a
+          make -j"$(nproc)"
+          make INSTALL_ROOT="$PWD/android-build" install
+          "$Qt5_Dir/bin/androiddeployqt" \
+            --input android-HorizonLauncher-deployment-settings.json \
+            --output android-build \
+            --android-platform android-30 \
+            --gradle
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: HorizonLauncher-debug-apk
+          path: build/android-build/build/outputs/apk/debug/*.apk
