@@ -1,0 +1,49 @@
+name: LaunchJava Release
+
+# Push a tag like `launchjava-v2.4.11` to build a debug-signed APK and publish a GitHub Release.
+# No repository secrets are required.
+on:
+  push:
+    tags:
+      - "launchjava-v*"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: "temurin"
+          java-version: "17"
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Build debug APK
+        run: |
+          chmod +x gradlew
+          ./gradlew :ZalithLauncher:assembleDebug -Darch=all
+
+      - name: Collect APK
+        run: |
+          mkdir -p out
+          apk=$(find ZalithLauncher/build/outputs/apk/debug -name "*.apk" | head -n 1)
+          test -n "$apk"
+          cp "$apk" "out/LaunchJava-${GITHUB_REF_NAME}.apk"
+          ls -la out
+
+      - name: Publish GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: LaunchJava ${{ github.ref_name }}
+          files: out/*.apk
+          generate_release_notes: true
+          fail_on_unmatched_files: true
