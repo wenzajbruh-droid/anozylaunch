@@ -1,6 +1,6 @@
-# Horizon Launcher
+# LaunchJava
 
-**Unofficial modified version.** Horizon Launcher is a personal Android launcher for
+**Unofficial modified version.** LaunchJava is a personal Android launcher for
 [Minecraft: Java Edition](https://www.minecraft.net/), built from source code of
 [Zalith Launcher 2](https://github.com/ZalithLauncher/ZalithLauncher2) and its community fork
 [Zalith Launcher 2+](https://github.com/Star1xr/ZalithLauncher2Plus). It is not affiliated with or endorsed by
@@ -27,15 +27,15 @@ Debug build (signed with the local Android debug key):
 Release build (requires your own keystore; nothing is bundled in this repo):
 
 ```bash
-export HORIZON_KEYSTORE=/path/to/your.jks
-export HORIZON_KEYSTORE_PASS=...
-export HORIZON_KEY_ALIAS=...
-export HORIZON_KEY_PASS=...
+export LAUNCHJAVA_KEYSTORE=/path/to/your.jks
+export LAUNCHJAVA_KEYSTORE_PASS=...
+export LAUNCHJAVA_KEY_ALIAS=...
+export LAUNCHJAVA_KEY_PASS=...
 ./gradlew :ZalithLauncher:assembleRelease
 ```
 
 Create a keystore once with `keytool -genkeypair -v -keystore your.jks -alias horizon -keyalg RSA -keysize 2048 -validity 10000`.
-Without `HORIZON_KEYSTORE`, the release build is produced unsigned.
+Without `LAUNCHJAVA_KEYSTORE`, the release build is produced unsigned.
 
 ## Renaming
 

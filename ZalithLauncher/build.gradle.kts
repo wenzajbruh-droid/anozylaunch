@@ -14,7 +14,7 @@ plugins {
 }
 
 val zalithPackageName = "com.movtery.zalithlauncher" // Kotlin/R namespace, kept as-is
-val horizonApplicationId = "io.github.wenzajbruh.horizonlauncher"
+val horizonApplicationId = "launchae.anzy"
 val launcherAPPName = project.findProperty("launcher_app_name") as? String ?: error("The \"launcher_app_name\" property is not set in gradle.properties.")
 val launcherName = project.findProperty("launcher_name") as? String ?: error("The \"launcher_name\" property is not set in gradle.properties.")
 val launcherShortName = project.findProperty("launcher_short_name") as? String ?: error("The \"launcher_short_name\" property is not set in gradle.properties.")
@@ -44,13 +44,13 @@ android {
     compileSdk = 37
 
     // Release signing is read from environment variables so no key material lives in the repo.
-    // If HORIZON_KEYSTORE is not set, the release build is left unsigned.
+    // If LAUNCHJAVA_KEYSTORE is not set, the release build is left unsigned.
     signingConfigs {
         create("releaseBuild") {
-            System.getenv("HORIZON_KEYSTORE")?.let { storeFile = file(it) }
-            storePassword = System.getenv("HORIZON_KEYSTORE_PASS")
-            keyAlias = System.getenv("HORIZON_KEY_ALIAS")
-            keyPassword = System.getenv("HORIZON_KEY_PASS")
+            System.getenv("LAUNCHJAVA_KEYSTORE")?.let { storeFile = file(it) }
+            storePassword = System.getenv("LAUNCHJAVA_KEYSTORE_PASS")
+            keyAlias = System.getenv("LAUNCHJAVA_KEY_ALIAS")
+            keyPassword = System.getenv("LAUNCHJAVA_KEY_PASS")
         }
     }
 
@@ -67,7 +67,7 @@ android {
         release {
             isMinifyEnabled = true
             isShrinkResources = true
-            if (System.getenv("HORIZON_KEYSTORE") != null) {
+            if (System.getenv("LAUNCHJAVA_KEYSTORE") != null) {
                 signingConfig = signingConfigs.getByName("releaseBuild")
             }
             proguardFiles(
