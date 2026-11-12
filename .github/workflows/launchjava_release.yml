@@ -1,11 +1,11 @@
 name: LaunchJava Release
 
-# Push a tag like `launchjava-v2.4.11` to build a debug-signed APK and publish a GitHub Release.
-# No repository secrets are required.
+# Pushing to the `launchjava-release` branch builds a debug-signed APK and publishes a GitHub Release
+# tagged launchjava-v<launcher_version_name>. No repository secrets are required.
 on:
   push:
-    tags:
-      - "launchjava-v*"
+    branches:
+      - "launchjava-release"
 
 permissions:
   contents: write
@@ -31,19 +31,22 @@ jobs:
           chmod +x gradlew
           ./gradlew :ZalithLauncher:assembleDebug -Darch=all
 
-      - name: Collect APK
+      - name: Collect APK and version
         run: |
           mkdir -p out
+          ver=$(grep '^launcher_version_name=' ZalithLauncher/gradle.properties | cut -d= -f2 | tr -d '\r ')
+          echo "RELEASE_TAG=launchjava-v${ver}" >> "$GITHUB_ENV"
           apk=$(find ZalithLauncher/build/outputs/apk/debug -name "*.apk" | head -n 1)
           test -n "$apk"
-          cp "$apk" "out/LaunchJava-${GITHUB_REF_NAME}.apk"
+          cp "$apk" "out/LaunchJava-v${ver}.apk"
           ls -la out
 
       - name: Publish GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ github.ref_name }}
-          name: LaunchJava ${{ github.ref_name }}
+          tag_name: ${{ env.RELEASE_TAG }}
+          name: LaunchJava ${{ env.RELEASE_TAG }}
+          target_commitish: ${{ github.sha }}
           files: out/*.apk
           generate_release_notes: true
           fail_on_unmatched_files: true
