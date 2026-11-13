@@ -36,4 +36,4 @@ jobs:
         with:
           name: unit-test-reports
           path: ZalithLauncher/build/reports/tests/
-          archive: false
+          archive: true
