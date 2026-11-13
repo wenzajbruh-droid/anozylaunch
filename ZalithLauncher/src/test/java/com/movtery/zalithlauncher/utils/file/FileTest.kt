@@ -29,6 +29,7 @@ class FileTest {
     @Test
     fun testCalculateFileSha1() {
         val file = File("F:\\Download\\geckolib-forge-1.21.8-5.2.2.jar")
+        org.junit.Assume.assumeTrue("Needs a local jar at a Windows path; skipped on other machines", file.exists())
         runBlocking(Dispatchers.IO) {
             val sha11 = calculateFileSha1(file)
             println("sha1 1 = $sha11")

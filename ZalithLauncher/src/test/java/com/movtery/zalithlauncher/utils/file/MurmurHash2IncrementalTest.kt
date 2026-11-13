@@ -29,6 +29,7 @@ class MurmurHash2IncrementalTest {
     @Test
     fun testTwoWay() {
         val file = File("F:\\Download\\geckolib-forge-1.21.8-5.2.2.jar")
+        org.junit.Assume.assumeTrue("Needs a local jar at a Windows path; skipped on other machines", file.exists())
         val hash1 = way1(file)
         println("Way 1 hash = $hash1")
         val hash2 = way2(file)
